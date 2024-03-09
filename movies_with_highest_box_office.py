@@ -94,11 +94,21 @@ for i in range(len(box_office_df_links)):
         
     time.sleep(3)    
     
+# Custom conversion function
+def convert_to_numeric(value_str):
+    return int(value_str.replace(',', '').replace('$', ''))
+
+# Apply the conversion function to the 'worldwide_gross' column
+box_office_df_links['worldwide_gross'] = box_office_df_links['worldwide_gross'].apply(convert_to_numeric)
+
+# Remove square brackets '[' and ']', and single quotes
+box_office_df_links['img_src'] = box_office_df_links['img_src'].str.replace(r'[\[\]\'\"]', '', regex=True)
+
 box_office_df_links["image_name"] = ""
-    
+   
 #download movie poster
 for i in range(len(box_office_df_links)):
-    image_url = box_office_df_links.iloc[i, 5]  
+    image_url = box_office_df_links.iloc[i, 4]  
 
     image_name = f"movie_poster_{i + 1}.png"
     box_office_df_links.loc[i, 'image_name'] = image_name
@@ -107,5 +117,6 @@ for i in range(len(box_office_df_links)):
     
     with open(image_name, 'wb') as file:
         file.write(response.content)
-        
+     
+      
 box_office_df_links.to_csv("movies_with_highest_box_office.csv", index=False)
