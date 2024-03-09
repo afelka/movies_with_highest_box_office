@@ -93,4 +93,19 @@ for i in range(len(box_office_df_links)):
         print("IMDb ID not found in the URL.")
         
     time.sleep(3)    
+    
+box_office_df_links["image_name"] = ""
+    
+#download movie poster
+for i in range(len(box_office_df_links)):
+    image_url = box_office_df_links.iloc[i, 5]  
+
+    image_name = f"movie_poster_{i + 1}.png"
+    box_office_df_links.loc[i, 'image_name'] = image_name
+
+    response = requests.get(image_url)
+    
+    with open(image_name, 'wb') as file:
+        file.write(response.content)
         
+box_office_df_links.to_csv("movies_with_highest_box_office.csv", index=False)
