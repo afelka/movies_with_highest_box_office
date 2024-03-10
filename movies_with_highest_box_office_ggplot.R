@@ -10,18 +10,23 @@ movies_with_highest_box_office_top_250 <- movies_with_highest_box_office %>% arr
 
 highest_avg_rating <- movies_with_highest_box_office_top_250 %>% arrange(desc(rating)) %>% slice(1)
 lowest_avg_rating <- movies_with_highest_box_office_top_250 %>% arrange(rating) %>% slice(1)
+highest_box_office <- movies_with_highest_box_office_top_250 %>% arrange(desc(worldwide_gross)) %>% slice(1)
 
-# Create a ggplot2 plot with book covers as points
+# Create a ggplot2 plot with movie posters as points
 gg <- ggplot(movies_with_highest_box_office_top_250, aes(x = rating, y = worldwide_gross)) +
-  geom_image(aes(image = image_name), size = 0.03) +  # Add book covers
+  geom_image(aes(image = image_name), size = 0.03) +  # Add movie posters
+  geom_text_repel(data = highest_box_office, aes(x = rating, y = worldwide_gross, 
+                                              label = paste0(movie_title, "\nhas the highest box office revenue with\n$",
+                                                             scales::comma(worldwide_gross))),
+                  color = "red", size = 2.5 , vjust = 1.5,hjust = 0.7) +
   geom_text_repel(data = highest_avg_rating, aes(x = rating, y = worldwide_gross, 
                                                  label = paste0(movie_title, "\nhas the highest avg.(",rating ,
                                                                 ")\nrating across movies with highest box office \n")),
-                  color = "orange", size = 1.8 , vjust = -0.25, hjust = 0.7) +
+                  color = "darkblue", size = 1.8 , vjust = -0.25, hjust = 0.7) +
   geom_text_repel(data = lowest_avg_rating, aes(x = rating, y = worldwide_gross, 
                                                 label = paste0(movie_title, "\nhas the lowest avg.(",rating ,
                                                                ")\nrating across movies with highest box office \n")),
-                  color = "purple", size = 2 , vjust = -1.25, hjust = 0.7) +
+                  color = "purple", size = 2 , vjust = -1.25, hjust = 0.5) +
   labs(title = "Box Office vs Average IMDB Rating for the Movies with Highest Box Office Revenue",
        x = "Average IMDB Rating",
        y = "Box Office in $") +
